@@ -1,0 +1,71 @@
+{
+  "description": "card claims kid=key-b but is actually signed by key-a",
+  "agent_card_url": "https://example.com/.well-known/agent-card.json",
+  "card_fetched": true,
+  "fetch_latency_ms": 118,
+  "probed_at": "2026-04-21T17:00:00Z",
+  "card": {
+    "name": "Example Compliance Agent",
+    "description": "Reference A2A agent for harness fixtures.",
+    "issuer": "did:web:example.com",
+    "capabilities": [
+      "summarize",
+      "translate"
+    ],
+    "schema_version": "a2a/0.3.0",
+    "signature": {
+      "alg": "EdDSA",
+      "kid": "did:web:example.com#key-b",
+      "value": "N4PjO4gpKRkNGxeUXVKWfxCPKMTrF_uSFveMLJiXql8gPBX6NRcXgLRjMuXhV_fPEVrrq5gPrJcKFqIu3KxBAg"
+    }
+  },
+  "did_documents": {
+    "did:web:example.com": {
+      "id": "did:web:example.com",
+      "verificationMethod": [
+        {
+          "id": "did:web:example.com#key-b",
+          "type": "Ed25519VerificationKey2020",
+          "controller": "did:web:example.com",
+          "publicKeyMultibase": "z6MkjEvoemobV2cbn4c6ha61qSckQMjefQKuoRBnNCRakjpR"
+        },
+        {
+          "id": "did:web:example.com#key-c",
+          "type": "Ed25519VerificationKey2020",
+          "controller": "did:web:example.com",
+          "publicKeyMultibase": "z6MkrnECK1oLUHfUizfJj57ZVc2LEtxwo44uja7nAq5EyftQ"
+        },
+        {
+          "id": "did:web:example.com#key-a",
+          "type": "Ed25519VerificationKey2020",
+          "controller": "did:web:example.com",
+          "publicKeyMultibase": "z6Mkrebh67iwXe5ZF8KW5Fcn6HnH2d7mMJT35Cj4KLVM8RWz"
+        }
+      ],
+      "authentication": [
+        "did:web:example.com#key-b",
+        "did:web:example.com#key-c"
+      ]
+    }
+  },
+  "expected_row": {
+    "probed_at": "2026-04-21T17:00:00Z",
+    "agent_card_url": "https://example.com/.well-known/agent-card.json",
+    "card_fetched": true,
+    "fetch_latency_ms": 118,
+    "issuer_did": "did:web:example.com",
+    "did_resolved": true,
+    "did_resolver_unsupported": false,
+    "signature_present": true,
+    "signature_valid": false,
+    "signature_failure_mode": "key_mismatch",
+    "delegation_chain_present": false,
+    "delegation_chain_valid": null,
+    "delegation_failure_mode": null,
+    "overall_compliance": "fail_signature",
+    "harness_version": "0.1.0",
+    "notes": [
+      "signature verified against did:web:example.com#key-a, not did:web:example.com#key-b"
+    ]
+  }
+}

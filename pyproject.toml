@@ -1,0 +1,26 @@
+[project]
+name = "a2a-compliance-harness"
+version = "0.1.0"
+description = "Bounded-scope signature-verification harness for A2A Agent Cards."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Tymofii Pidlisnyi" }]
+dependencies = [
+    "cryptography>=42",
+    "pydantic>=2",
+    "requests>=2.28",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "ruff>=0.4"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

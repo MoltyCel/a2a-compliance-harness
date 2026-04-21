@@ -1,0 +1,58 @@
+{
+  "description": "happy-path card modified post-sign",
+  "agent_card_url": "https://example.com/.well-known/agent-card.json",
+  "card_fetched": true,
+  "fetch_latency_ms": 142,
+  "probed_at": "2026-04-21T17:00:00Z",
+  "card": {
+    "name": "Example Compliance Agent",
+    "description": "Reference A2A agent for harness fixtures. (tampered)",
+    "issuer": "did:web:example.com",
+    "capabilities": [
+      "summarize",
+      "translate"
+    ],
+    "schema_version": "a2a/0.3.0",
+    "signature": {
+      "alg": "EdDSA",
+      "kid": "did:web:example.com#key-1",
+      "value": "N4PjO4gpKRkNGxeUXVKWfxCPKMTrF_uSFveMLJiXql8gPBX6NRcXgLRjMuXhV_fPEVrrq5gPrJcKFqIu3KxBAg"
+    }
+  },
+  "did_documents": {
+    "did:web:example.com": {
+      "id": "did:web:example.com",
+      "verificationMethod": [
+        {
+          "id": "did:web:example.com#key-1",
+          "type": "Ed25519VerificationKey2020",
+          "controller": "did:web:example.com",
+          "publicKeyMultibase": "z6Mkrebh67iwXe5ZF8KW5Fcn6HnH2d7mMJT35Cj4KLVM8RWz"
+        }
+      ],
+      "authentication": [
+        "did:web:example.com#key-1"
+      ]
+    }
+  },
+  "expected_row": {
+    "probed_at": "2026-04-21T17:00:00Z",
+    "agent_card_url": "https://example.com/.well-known/agent-card.json",
+    "card_fetched": true,
+    "fetch_latency_ms": 142,
+    "issuer_did": "did:web:example.com",
+    "did_resolved": true,
+    "did_resolver_unsupported": false,
+    "signature_present": true,
+    "signature_valid": false,
+    "signature_failure_mode": "tampered",
+    "delegation_chain_present": false,
+    "delegation_chain_valid": null,
+    "delegation_failure_mode": null,
+    "overall_compliance": "fail_signature",
+    "harness_version": "0.1.0",
+    "notes": [
+      "signature did not verify against any advertised key"
+    ]
+  }
+}
