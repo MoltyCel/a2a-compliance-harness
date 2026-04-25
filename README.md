@@ -131,6 +131,27 @@ pytest -v
 - Do not generate compliance reports, aggregate dashboards, or registry-wide scorecards. One row per probe is the entire output surface.
 - Do not invent new DID methods or signature algorithms. Ed25519 + JCS + did:web/did:key only.
 
+## Optional: MolTrust resolver
+
+The harness ships standalone but supports an optional DID resolver backed by the [MolTrust](https://moltrust.ch) SDK. When installed, it routes `did:moltrust:*` (native and bridge-resolved `ext_*`) and `did:web:*` through `api.moltrust.ch`, while falling through to the harness's own `DidResolver` for `did:key:*` and other methods.
+
+```bash
+pip install a2a-compliance-harness[moltrust]
+```
+
+```python
+from moltrust_adapter import MolTrustDidResolver
+from harness import probe
+
+with MolTrustDidResolver() as resolver:
+    row = probe(
+        "https://example.com/.well-known/agent-card.json",
+        resolver=resolver,
+    )
+```
+
+The harness itself does not import the moltrust SDK — `harness.py` stays free of identity-vendor dependencies per the standalone-by-design principle. The adapter (`moltrust_adapter.py`) is opt-in via the `[moltrust]` extra.
+
 ## License
 
 Apache-2.0. Copyright 2026 Tymofii Pidlisnyi.

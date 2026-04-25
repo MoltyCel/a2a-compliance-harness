@@ -500,28 +500,49 @@ def _probe_core(
 # ---------------------------------------------------------------------------
 
 
-def probe(agent_card_url: str, *, timeout: float = 10.0) -> Row:
-    """Probe a live A2A Agent Card URL over HTTP."""
+def probe(
+    agent_card_url: str,
+    *,
+    timeout: float = 10.0,
+    resolver: DidResolver | None = None,
+) -> Row:
+    """Probe a live A2A Agent Card URL over HTTP.
+
+    Args:
+        agent_card_url: The Agent Card URL to fetch.
+        timeout: HTTP timeout in seconds.
+        resolver: Optional DidResolver subclass. Defaults to a fresh
+            ``DidResolver()`` (existing standalone behavior). Pass a
+            custom resolver to route specific DID methods through an
+            external resolver while preserving fall-through.
+    """
     import requests
+
+    if resolver is None:
+        resolver = DidResolver()
 
     t0 = time.perf_counter()
     try:
         resp = requests.get(agent_card_url, timeout=timeout)
         fetch_ms = int((time.perf_counter() - t0) * 1000)
         if resp.status_code != 200:
-            return _probe_core(agent_card_url, None, fetch_ms, False, DidResolver())
+            return _probe_core(agent_card_url, None, fetch_ms, False, resolver)
         try:
             card = resp.json()
         except ValueError:
-            return _probe_core(agent_card_url, None, fetch_ms, False, DidResolver())
+            return _probe_core(agent_card_url, None, fetch_ms, False, resolver)
     except Exception:
         fetch_ms = int((time.perf_counter() - t0) * 1000)
-        return _probe_core(agent_card_url, None, fetch_ms, False, DidResolver())
+        return _probe_core(agent_card_url, None, fetch_ms, False, resolver)
 
-    return _probe_core(agent_card_url, card, fetch_ms, True, DidResolver())
+    return _probe_core(agent_card_url, card, fetch_ms, True, resolver)
 
 
-def probe_from_fixture(fixture_path: str | Path) -> Row:
+def probe_from_fixture(
+    fixture_path: str | Path,
+    *,
+    resolver: DidResolver | None = None,
+) -> Row:
     """Probe using a local fixture bundle — no network calls.
 
     The fixture is a JSON file with keys:
@@ -531,10 +552,20 @@ def probe_from_fixture(fixture_path: str | Path) -> Row:
     - `fetch_latency_ms` (optional)
     - `card_fetched` (optional, default true)
     - `probed_at` (optional, used for deterministic expected_row)
+
+    Args:
+        fixture_path: Path to the fixture JSON.
+        resolver: Optional DidResolver. Defaults to
+            ``DidResolver(fixture_docs=bundle["did_documents"])``
+            (existing behavior). When supplied, the caller's resolver
+            is used as-is — the fixture's ``did_documents`` are not
+            auto-loaded; pass them via the resolver's own constructor
+            if needed.
     """
     fixture_path = Path(fixture_path)
     bundle = json.loads(fixture_path.read_text())
-    resolver = DidResolver(fixture_docs=bundle.get("did_documents") or {})
+    if resolver is None:
+        resolver = DidResolver(fixture_docs=bundle.get("did_documents") or {})
     return _probe_core(
         agent_card_url=bundle["agent_card_url"],
         card=bundle.get("card"),
